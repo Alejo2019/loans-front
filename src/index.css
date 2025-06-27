@@ -1,0 +1,144 @@
+/* Global styles for Cotel with a vibrant, modern look */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  padding: 20px;
+}
+
+/* Card styles with gradient and shadow */
+.card {
+  border: none;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Headings with bold, modern typography */
+h1 {
+  font-weight: 700;
+  color: #1a3c34;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 1s ease-in;
+}
+
+/* Form controls with vibrant styling */
+.form-control {
+  border-radius: 10px;
+  border: 2px solid #28a745;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #1a3c34;
+  box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Buttons with gradient and hover animation */
+.btn-primary {
+  background: linear-gradient(90deg, #28a745, #1a3c34);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #1a3c34, #28a745);
+  transform: scale(1.05);
+}
+
+.btn-success {
+  background: linear-gradient(90deg, #17a2b8, #138496);
+  border: none;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+}
+
+.btn-success:hover {
+  background: linear-gradient(90deg, #138496, #17a2b8);
+  transform: scale(1.05);
+}
+
+/* Table styling with alternating colors and hover effects */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+  background: #1a3c34;
+  color: #fff;
+  font-weight: 600;
+}
+
+.table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.table tr:hover {
+  background: #e9ecef;
+  transition: background 0.2s ease;
+}
+
+/* Navbar with gradient and shadow */
+.navbar {
+  background: linear-gradient(90deg, #1a3c34, #28a745);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand, .nav-link {
+  color: #fff !important;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #f0f4f8 !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .display-6 {
+    font-size: 1.8rem;
+  }
+  .card {
+    margin: 10px;
+  }
+  .form-control {
+    font-size: 0.9rem;
+  }
+  .btn {
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+  .table {
+    font-size: 0.85rem;
+  }
+}
