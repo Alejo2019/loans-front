@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card } from 'react-bootstrap';
-import { getBankCapital } from '../services/api';
 
-const BankCapital: React.FC = () => {
-  const [capital, setCapital] = useState<number>(0);
+interface BankCapitalProps {
+  capital: number;
+}
 
-  useEffect(() => {
-    const fetchCapital = async () => {
-      const response = await getBankCapital();
-      setCapital(response.capital);
-    };
-    fetchCapital();
-  }, []);
-
+const BankCapital: React.FC<BankCapitalProps> = ({ capital }) => {
   return (
     <Card className="text-center mb-4 shadow-sm">
       <Card.Body>

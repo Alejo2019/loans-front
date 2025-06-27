@@ -1,11 +1,15 @@
 import React from 'react';
-import LoanRequest from '../components/LoanRequest';
 
-const Home: React.FC = () => {
+interface HomeProps {
+  children: React.ReactNode;
+}
+
+const Home: React.FC<HomeProps> = ({ children }) => {
   return (
     <div>
-      <h1 className="mb-4">Solicitar Préstamo</h1>
-      <LoanRequest onSubmit={() => window.location.reload()} />
+      <h1>Bienvenido a Cotel</h1>
+      <p>Solicita un préstamo o revisa el estado de tus solicitudes.</p>
+      {children}
     </div>
   );
 };

@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { Table, Button } from "react-bootstrap";
-import { Loan } from "../types";
-import { getLoans, payLoan } from "../services/api";
+import React from 'react';
+import { Table } from 'react-bootstrap';
+import { Loan, User } from '../types';
+import PaymentButton from './PaymentButton';
+import { payLoan } from '../services/api';
 
 interface LoanListProps {
-  status: "approved" | "rejected";
+  loans: Loan[];
+  users: User[];
+  status: 'approved' | 'rejected';
+  onLoanPaid?: () => void;
 }
 
-const LoanList: React.FC<LoanListProps> = ({ status }) => {
-  const [loans, setLoans] = useState<Loan[]>([]);
-
-  useEffect(() => {
-    const fetchLoans = async () => {
-      const response = await getLoans();
-      setLoans(response.filter((loan: Loan) => loan.status === status));
-    };
-    fetchLoans();
-  }, [status]);
-
+const LoanList: React.FC<LoanListProps> = ({ loans, users, status, onLoanPaid }) => {
   const handlePay = async (loanId: number) => {
     try {
       await payLoan(loanId);
-      setLoans(
-        loans.map((loan) =>
-          loan.id === loanId ? { ...loan, hasPaid: true } : loan
-        )
-      );
-      alert("Préstamo pagado");
-    } catch (error) {
-      alert("Error al procesar el pago");
+      alert('Préstamo pagado');
+      if (onLoanPaid) onLoanPaid();
+    } catch (error: any) {
+      alert(error || 'Error al procesar el pago');
     }
   };
+
+  const getUserName = (userId: string) => {
+    const user = users.find((u) => u.idCard === userId);
+    return user ? user.name : 'Desconocido';
+  };
+
+  const filteredLoans = loans.filter((loan) => loan.status === status && (status === 'approved' ? !loan.hasPaid : true));
 
   return (
     <Table striped bordered hover responsive>
@@ -39,20 +36,18 @@ const LoanList: React.FC<LoanListProps> = ({ status }) => {
           <th>Usuario</th>
           <th>Monto</th>
           <th>Estado</th>
-          {status === "approved" && <th>Acción</th>}
+          {status === 'approved' && <th>Acción</th>}
         </tr>
       </thead>
       <tbody>
-        {loans.map((loan) => (
+        {filteredLoans.map((loan) => (
           <tr key={loan.id}>
-            <td>{loan.userId}</td>
+            <td>{getUserName(loan.userId)}</td>
             <td>${loan.amount.toLocaleString()}</td>
-            <td>{loan.status}</td>
-            {status === "approved" && !loan.hasPaid && (
+            <td>{loan.status === 'approved' ? 'Aprobado' : 'Rechazado'}</td>
+            {status === 'approved' && !loan.hasPaid && (
               <td>
-                <Button variant="success" onClick={() => handlePay(loan.id!)}>
-                  Pagar
-                </Button>
+                <PaymentButton onPay={() => handlePay(loan.id!)} disabled={loan.hasPaid} />
               </td>
             )}
           </tr>

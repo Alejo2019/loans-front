@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Table } from 'react-bootstrap';
 import { User } from '../types';
-import { getUsers } from '../services/api';
 
-const UserList: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
+interface UserListProps {
+  users: User[];
+}
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await getUsers();
-      setUsers(response);
-    };
-    fetchUsers();
-  }, []);
-
+const UserList: React.FC<UserListProps> = ({ users }) => {
   return (
     <Table striped bordered hover responsive>
       <thead>
@@ -34,7 +27,7 @@ const UserList: React.FC = () => {
             <td>{user.email}</td>
             <td>{user.idCard}</td>
             <td>${user.loanAmount.toLocaleString()}</td>
-            <td>{user.loanStatus}</td>
+            <td>{user.loanStatus === 'approved' ? 'Aprobado' : 'Rechazado'}</td>
             <td>{user.hasPaid ? 'Sí' : 'No'}</td>
             <td>{user.paymentDate || '-'}</td>
           </tr>

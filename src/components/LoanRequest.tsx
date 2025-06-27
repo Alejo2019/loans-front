@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { Form, Button, Alert } from 'react-bootstrap';
+import { createUser, getUsers } from '../services/api';
 import { User } from '../types';
-import { Form, Button } from 'react-bootstrap';
-import { createUser } from '../services/api';
 
 interface LoanRequestProps {
   onSubmit: () => void;
@@ -16,20 +16,42 @@ const LoanRequest: React.FC<LoanRequestProps> = ({ onSubmit }) => {
     loanStatus: 'rejected',
     hasPaid: false,
   });
+  const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
     try {
-      await createUser(user);
+      const users = await getUsers();
+      const existingUser = users.find((u: User) => u.idCard === user.idCard);
+
+      if (existingUser) {
+        if (existingUser.loanStatus === 'rejected') {
+          setError('No puedes solicitar un nuevo crédito porque fuiste rechazado previamente.');
+          return;
+        }
+        if (!existingUser.hasPaid) {
+          setError('No puedes solicitar un nuevo crédito porque tienes un préstamo pendiente.');
+          return;
+        }
+      }
+
+      const response = await createUser(user);
+      setSuccess(`Solicitud enviada. Estado: ${response.loanStatus}`);
       onSubmit();
-      alert('Solicitud enviada');
-    } catch (error) {
-      alert('Error al enviar la solicitud');
+      setUser({ ...user, name: '', email: '', idCard: '', loanAmount: 10000 });
+    } catch (error: any) {
+      setError(error || 'Error al enviar la solicitud');
     }
   };
 
   return (
     <Form onSubmit={handleSubmit} className="p-4 bg-light rounded shadow-sm">
+      {error && <Alert variant="danger">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
       <Form.Group className="mb-3">
         <Form.Label>Nombre</Form.Label>
         <Form.Control
