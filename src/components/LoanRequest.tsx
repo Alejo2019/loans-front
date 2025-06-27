@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 import { createUser, getUsers } from '../services/api';
 import { User } from '../types';
 
@@ -16,13 +17,40 @@ const LoanRequest: React.FC<LoanRequestProps> = ({ onSubmit }) => {
     loanStatus: 'rejected',
     hasPaid: false,
   });
-  const [error, setError] = useState<string>('');
-  const [success, setSuccess] = useState<string>('');
+
+  const validateName = (name: string): boolean => {
+    // Nombre completo: al menos dos palabras (nombre y apellido), solo letras y espacios, incluye acentos y ñ
+    const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+ [a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/;
+    return nameRegex.test(name);
+  };
+
+  const validateIdCard = (idCard: string): boolean => {
+    // Cédula: solo números
+    const idCardRegex = /^\d+$/;
+    return idCardRegex.test(idCard);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+
+    // Validaciones de frontend
+    if (!validateName(user.name)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor, ingrese un nombre completo (nombre y apellido, solo letras y espacios).',
+      });
+      return;
+    }
+
+    if (!validateIdCard(user.idCard)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'La cédula debe contener solo números.',
+      });
+      return;
+    }
 
     try {
       const users = await getUsers();
@@ -30,35 +58,50 @@ const LoanRequest: React.FC<LoanRequestProps> = ({ onSubmit }) => {
 
       if (existingUser) {
         if (existingUser.loanStatus === 'rejected') {
-          setError('No puedes solicitar un nuevo crédito porque fuiste rechazado previamente.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No puedes solicitar un nuevo crédito porque fuiste rechazado previamente.',
+          });
           return;
         }
         if (!existingUser.hasPaid) {
-          setError('No puedes solicitar un nuevo crédito porque tienes un préstamo pendiente.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No puedes solicitar un nuevo crédito porque tienes un préstamo pendiente.',
+          });
           return;
         }
       }
 
       const response = await createUser(user);
-      setSuccess(`Solicitud enviada. Estado: ${response.loanStatus}`);
+      Swal.fire({
+        icon: 'success',
+        title: 'Solicitud enviada',
+        text: `Estado: ${response.loanStatus === 'approved' ? 'Aprobado' : 'Rechazado'}`,
+      });
       onSubmit();
-      setUser({ ...user, name: '', email: '', idCard: '', loanAmount: 10000 });
+      setUser({ ...user, name: '', email: '', idCard: '', loanAmount: 10000, paymentDate: '' });
     } catch (error: any) {
-      setError(error || 'Error al enviar la solicitud');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error || 'Error al enviar la solicitud',
+      });
     }
   };
 
   return (
     <Form onSubmit={handleSubmit} className="p-4 bg-light rounded shadow-sm">
-      {error && <Alert variant="danger">{error}</Alert>}
-      {success && <Alert variant="success">{success}</Alert>}
       <Form.Group className="mb-3">
-        <Form.Label>Nombre</Form.Label>
+        <Form.Label>Nombre completo</Form.Label>
         <Form.Control
           type="text"
           value={user.name}
           onChange={(e) => setUser({ ...user, name: e.target.value })}
           required
+          placeholder="Ej: Juan Pérez"
         />
       </Form.Group>
       <Form.Group className="mb-3">
@@ -68,6 +111,7 @@ const LoanRequest: React.FC<LoanRequestProps> = ({ onSubmit }) => {
           value={user.email}
           onChange={(e) => setUser({ ...user, email: e.target.value })}
           required
+          placeholder="Ej: usuario@dominio.com"
         />
       </Form.Group>
       <Form.Group className="mb-3">
@@ -77,6 +121,7 @@ const LoanRequest: React.FC<LoanRequestProps> = ({ onSubmit }) => {
           value={user.idCard}
           onChange={(e) => setUser({ ...user, idCard: e.target.value })}
           required
+          placeholder="Ej: 123456789"
         />
       </Form.Group>
       <Form.Group className="mb-3">

@@ -51,20 +51,17 @@ const App: React.FC = () => {
 
     socket.on('connect', () => {
       console.log('Conectado al WebSocket');
-      setMessage('Conectado al servidor');
     });
 
     socket.on('dataUpdated', (data) => {
       setUsers(data.users || []);
       setLoans(data.loans || []);
       setBankCapital(data.bank || { capital: 0 });
-      setMessage('Datos actualizados');
       console.log('Datos recibidos vía WebSocket:', data);
     });
 
     socket.on('disconnect', () => {
       console.log('Desconectado del WebSocket');
-      setMessage('Desconectado del servidor');
     });
 
     return () => {
