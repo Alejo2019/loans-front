@@ -75,7 +75,7 @@ const App: React.FC = () => {
     <Router>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="/">Cotel</Navbar.Brand>
+          <Navbar.Brand href="/">Prueba</Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse>
             <Nav className="me-auto">

@@ -7,7 +7,7 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ children }) => {
   return (
     <div>
-      <h1>Bienvenido a Cotel</h1>
+      <h1>Bienvenido a mi prueba</h1>
       <p>Solicita un préstamo o revisa el estado de tus solicitudes.</p>
       {children}
     </div>
