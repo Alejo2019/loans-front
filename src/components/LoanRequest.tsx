@@ -19,13 +19,11 @@ const LoanRequest: React.FC<LoanRequestProps> = ({ onSubmit }) => {
   });
 
   const validateName = (name: string): boolean => {
-    // Nombre completo: al menos dos palabras (nombre y apellido), solo letras y espacios, incluye acentos y ñ
     const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+ [a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/;
     return nameRegex.test(name);
   };
 
   const validateIdCard = (idCard: string): boolean => {
-    // Cédula: solo números
     const idCardRegex = /^\d+$/;
     return idCardRegex.test(idCard);
   };
@@ -33,7 +31,6 @@ const LoanRequest: React.FC<LoanRequestProps> = ({ onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validaciones de frontend
     if (!validateName(user.name)) {
       Swal.fire({
         icon: 'error',
